@@ -1,0 +1,8 @@
+name = Ctools context example
+description = An example of things you can do with a Ctools context.
+core = 7.x
+package = franrodriguez.net
+dependencies[] = ctools
+dependencies[] = panels
+dependencies[] = page_manager
+configure = admin/settings/ctools_context_example

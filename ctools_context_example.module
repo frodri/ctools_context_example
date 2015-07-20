@@ -1,0 +1,63 @@
+<?php
+
+function ctools_context_example_ctools_plugin_directory($owner, $plugin_type) {
+  if ($owner == 'ctools' || $owner == 'page_manager' || $owner == 'panels') {
+    return "plugins/$plugin_type";
+  }
+}
+
+function ctools_context_example_theme() {
+  $base = array(
+    'path' => drupal_get_path('module', 'ctools_context_example') . '/theme',
+  );
+
+  return array(
+    'match_stats' => $base + array(
+      'template' => 'match-stats',
+      'variables' => array('stats' => NULL),
+    ),
+    'towers_remaining' => $base + array(
+      'template' => 'towers-remaining',
+      'variables' => array('stats' => NULL),
+    ),
+  );
+}
+
+function ctools_context_example_menu() {
+  $items['admin/config/ctools_context_example'] = array(
+    'title' => 'Ctools Context Example',
+    'description' => 'Settings to the Ctools context example',
+    'position' => 'right',
+    'weight' => 20, 
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+  );
+  $items['admin/config/ctools_context_example/settings'] = array(
+    'title' => 'Module settings',
+    'description' => 'Configure the Ctools context example here.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ctools_context_example_admin'),
+    'access arguments' => array('access administration pages'),
+  );
+  return $items;
+}
+
+function ctools_context_example_admin() {
+  $form['ctools_context_example_api_key'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Steam API key'),
+    '#default_value' => variable_get('ctools_context_example_api_key', ''),
+    '#description' => t("Enter your API key here to disable the use of the module's sample data. You may obtain one here: http://steamcommunity.com/dev/apikey"),
+  );
+
+  return system_settings_form($form);
+}
+
+function ctools_context_example_admin_validate($form, &$form_state) {
+  $key = $form_state['values']['ctools_context_example_api_key'];
+  if (!empty($key) && strlen($key) != 32 ) {
+    form_set_error('ctools_context_example_api_key', t('Your key does not contain the correct amount of characters.'));
+  }
+}
